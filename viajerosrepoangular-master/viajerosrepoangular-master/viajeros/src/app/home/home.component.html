@@ -1,0 +1,47 @@
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+    <div class="text-center rounded-3 shadow-lg p-4 m-4 bg-white">
+        <h1 class="px-5 py-5 pb-0" style="font-size: 2.5rem;">Viajeros.com</h1>
+        <label for="" class="dmsans">Sign in to continue</label>
+
+        <form #homeForm="ngForm">
+            <div class="p-4">
+                <div class="text-start">
+                    <label for="usuario" class="form-label">USUARIO</label>
+                    <input #usuario="ngModel" type="text" name="usuario" class="form-control mb-0"
+                        [(ngModel)]="login.username" required
+                        [ngClass]="{'is-valid': usuario.valid && (usuario.touched || usuario.dirty), 'is-invalid': usuario.invalid && (usuario.touched || usuario.dirty)}">
+
+                    @if(usuario.getError('required') && usuario.dirty){
+                    <p class="text-danger">El usuario es requerido</p>
+                    }
+
+                    
+                </div>
+
+                <div class="text-start mt-4">
+                    <label for="pass" class="form-label">PASSWORD</label>
+                    <input #pass="ngModel" type="password" name="pass" class="form-control mb-0"
+                        [(ngModel)]="login.pass" required
+                        [ngClass]="{'is-valid': pass.valid && (pass.touched || pass.dirty), 'is-invalid': pass.invalid && (pass.touched || pass.dirty)}"
+                        (keydown.enter)="onSubmit()"> <!-- Escucha la tecla Enter para enviar el formulario -->
+                        @if(pass.getError('required') && pass.dirty){
+                        <p class="text-danger">El password es requerido</p>
+                        }
+
+                </div>
+                <div class="pt-3 mt-3"> <button type="button" class="btn btn-black btn-lg poppins-bold"
+                        [routerLink]="'/principal'" (click)="onSubmit()" [disabled]="homeForm.invalid">Login</button>
+                </div>
+
+            </div>
+
+        </form>
+        <div class="d-grid gap-2 flex-column justify-content-md-center align-items-center mb-4 mb-lg-3 px-5">
+
+            <a [routerLink]="'/passRecovery'" class="form-label mb-0" >¿Olvidate la contraseña?</a>
+            <a [routerLink]="'/register'" class="form-label">Registrarse</a>
+
+
+        </div>
+    </div>
+</div>

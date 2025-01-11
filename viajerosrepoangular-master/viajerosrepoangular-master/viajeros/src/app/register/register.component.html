@@ -1,0 +1,83 @@
+<div class=" container d-flex align-items-center justify-content-center min-vh-100">
+
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white ">
+        <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Crear nueva cuenta</h1>
+        <label for="" class="dmsans">¿Ya estas registrado? </label><br>
+        <label for=""><a [routerLink]="'/home'">logueate aca</a></label>
+
+        <form [formGroup]="registerForm" (ngSubmit)="loadNewUser()">
+            <div class="p-4">
+
+
+                <div class="text-start mt-4">
+                    <label for="name" class="form-label">NOMBRE</label>
+                    <input formControlName="name" class="form-control mb-0"
+                        [ngClass]="{'is-valid': registerForm.get('name')?.valid && registerForm.get('name')?.touched, 
+                                   'is-invalid': registerForm.get('name')?.invalid && registerForm.get('name')?.touched}" required>
+                    <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+                        class="text-danger">
+                        El nombre es requerido
+                    </div>
+                </div>
+
+                <div class="text-start mt-4">
+                    <label for="email" class="form-label">E-MAIL</label>
+                    <input formControlName="email" type="email" class="form-control mb-0"
+                        [ngClass]="{'is-valid': registerForm.get('email')?.valid && registerForm.get('email')?.touched, 
+                                   'is-invalid': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}" required>
+                    <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+                        class="text-danger">
+                        Debe ser un email válido
+                    </div>
+                </div>
+
+                <div class="text-start mt-4">
+                    <label for="pass" class="form-label">PASSWORD</label>
+                    <input formControlName="password" type="password" class="form-control mb-0"
+                        [ngClass]="{'is-valid': registerForm.get('password')?.valid && registerForm.get('password')?.touched, 
+                                   'is-invalid': registerForm.get('password')?.invalid && registerForm.get('password')?.touched}" required>
+                    <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.dirty"
+                        class="text-danger">
+                        La contraseña debe tener al menos 6 caracteres, un número y una mayúscula.
+                    </div>
+                </div>
+
+                <div class="text-start mt-4">
+                    <label for="passConfirm" class="form-label">REPETIR PASSWORD</label>
+                    <input formControlName="passwordConfirm" type="password" class="form-control mb-0" [ngClass]="{
+                         'is-valid': registerForm.get('passwordConfirm')?.valid && registerForm.get('passwordConfirm')?.touched, 
+                         'is-invalid': !checkPasswords() && registerForm.get('passwordConfirm')?.touched
+                       }" required>
+                    <div *ngIf="!checkPasswords() && registerForm.get('passwordConfirm')?.touched" class="text-danger">
+                        Las contraseñas no coinciden
+                    </div>
+                </div>
+
+                <div class="text-start mt-4">
+                    <label for="telefono" class="form-label mt-2">TELEFONO</label>
+                    <input formControlName="phone" type="text" class="form-control mb-3" [ngClass]="{
+                         'is-valid': registerForm.get('phone')?.valid && registerForm.get('phone')?.touched && registerForm.get('phone')?.value?.toString().length === 10, 
+                         'is-invalid': registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched
+                       }" required minlength="10" maxlength="10">
+                </div>
+                <div *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.value?.toString().length < 10"
+                    class="text-danger text-start ">
+                    Teléfono inválido: debe tener 10 dígitos.
+                </div>
+                @if (registerForm.get('phone')?.touched && registerForm.get('phone')?.value?.toString().length > 10) {
+                <p class="text-danger">No puede tener mas de 10 digitos</p>
+                }
+
+            </div>
+            <div class="text-start mt-0">
+                <div class="p-4 pt-0">
+                    <button type="submit" class="btn btn-black btn-lg poppins-bold"
+                        [disabled]="registerForm.invalid">Registrarse</button>
+                </div>
+            </div>
+        </form>
+   
+
+
+    </div>
+</div>

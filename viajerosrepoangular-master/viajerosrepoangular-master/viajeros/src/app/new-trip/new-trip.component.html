@@ -1,0 +1,243 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white">
+        <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">
+            {{ tripId ? 'Editar Viaje' : 'Crear Nuevo Viaje' }}
+        </h1>
+
+        <label class="dmsans">Comparte los gastos de tu viaje siendo chofer</label><br>
+
+        <label class="py-2"><a [routerLink]="'/principal'">Volver</a></label>
+
+        <form [formGroup]="createTripForm" (ngSubmit)="submitTripForm()">
+            <div class="p-4 pt-1">
+                <!-- Vehículo -->
+                <div *ngIf="vehiculos.length != 0" class="text-start mt-4">
+                    <label for="idVehiculo" class="form-label">ELIGE UN VEHÍCULO</label>
+                    <select formControlName="idVehiculo" class="form-control mb-0" required>
+                        <option *ngFor="let vehiculo of vehiculos" [value]="vehiculo.idCar  | number"
+                            (click)="vehicleSelected(vehiculo)">{{ vehiculo.brand
+                            }} {{
+                            vehiculo.model }}</option>
+                    </select>
+                    <div *ngIf="createTripForm.get('idVehiculo')?.invalid && createTripForm.get('idVehiculo')?.touched"
+                        class="text-danger">
+                        Debes elegir un vehículo.
+                    </div>
+                </div>
+                <div class="text-start mt-4 position-relative">
+                    <div *ngIf="vehiculos.length == 0">
+                        <label class="form-label text-start">NO TIENE VEHICULOS CARGADOS</label>
+                        <button type="button" class="py-2 btn btn-red btn-lg poppins-bold mb-3"
+                            [routerLink]="'../vehicle'">
+                            Cargar vehiculo
+                        </button>
+
+                    </div>
+                </div>
+                <!-- Origen -->
+                <div class="text-start mt-0 position-relative">
+                    <label for="origen" class="form-label">ORIGEN</label>
+                    <input formControlName="origen" type="text" class="form-control mb-0" [ngClass]="{'is-valid': createTripForm.get('origen')?.valid && createTripForm.get('origen')?.touched, 
+           'is-invalid': createTripForm.get('origen')?.invalid && createTripForm.get('origen')?.touched}"
+                        (input)="searchLocalidades('origen')" required autocomplete="off">
+                    <div *ngIf="createTripForm.get('origen')?.invalid && createTripForm.get('origen')?.touched"
+                        class="text-danger">
+                        Origen es requerido.
+                    </div>
+                    <!-- Campo oculto para el ID de la localidad de origen -->
+                    <input formControlName="localidadInicioId" type="hidden">
+
+                    <!-- Sugerencias de localidades estilo lista desplegable -->
+                    <div *ngIf="localidadesOrigen.length"
+                        class="suggestions-container position-absolute w-100 shadow-sm rounded">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let localidad of localidadesOrigen"
+                                (click)="selectLocalidad('origen', localidad)" (click)="searchLocalidadOrigen()">
+                                {{ localidad.nombre }} <!-- Mostrar el nombre junto con la provincia -->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Destino -->
+                <div class="text-start mt-4 position-relative">
+                    <label for="destino" class="form-label">DESTINO</label>
+                    <input formControlName="destino" type="text" class="form-control mb-0"
+                        [ngClass]="{'is-valid': createTripForm.get('destino')?.valid && createTripForm.get('destino')?.touched, 
+                          'is-invalid': createTripForm.get('destino')?.invalid && createTripForm.get('destino')?.touched}" (input)="searchLocalidades('destino')" required
+                        autocomplete="off">
+                    <div *ngIf="createTripForm.get('destino')?.invalid && createTripForm.get('destino')?.touched"
+                        class="text-danger">
+                        Destino es requerido.
+                    </div>
+                    <!-- Campo oculto para el ID de la localidad de destino -->
+                    <input formControlName="localidadFinId" type="hidden">
+
+                    <!-- Sugerencias de localidades estilo lista desplegable -->
+                    <div *ngIf="localidadesDestino.length"
+                        class="suggestions-container position-absolute w-100 shadow-sm rounded">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let localidad of localidadesDestino"
+                                (click)="selectLocalidad('destino', localidad)" (click)="searchLocalidadDestino()">
+                                {{ localidad.nombre }} <!-- Mostrar el nombre junto con la provincia -->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Fecha y hora de salida -->
+                <div class="text-start mt-4">
+                    <label for="fechaHoraInicio" class="form-label">FECHA Y HORA DE SALIDA</label>
+                    <input formControlName="fechaHoraInicio" type="datetime-local" class="form-control mb-0" required>
+                    <div *ngIf="createTripForm.get('fechaHoraInicio')?.invalid && createTripForm.get('fechaHoraInicio')?.touched"
+                        class="text-danger">
+                        Fecha y hora de salida son requeridas.
+                    </div>
+                </div>
+
+                <!-- Gasto total -->
+                <div class="text-start mt-4">
+                    <label for="gastoTotal" class="form-label">PRECIO TOTAL DEL VIAJE (EN $)</label>
+                    <input formControlName="gastoTotal" type="number" class="form-control mb-0" required>
+                    <div *ngIf="createTripForm.get('gastoTotal')?.invalid && createTripForm.get('gastoTotal')?.touched"
+                        class="text-danger">
+                        El gasto total es requerido y debe ser un valor numérico.
+                    </div>
+                    <div class="my-2">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="py-2 btn btn-green btn-lg poppins-bold"
+                            [disabled]="createTripForm.get('idVehiculo')?.invalid || createTripForm.get('origen')?.invalid || createTripForm.get('destino')?.invalid"
+                            data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Calcular costos
+                        </button>
+                    </div>
+
+
+
+                </div>
+
+                <!-- Espacios disponibles -->
+                <div class="text-start mt-4">
+                    <label for="asientosDisponibles" class="form-label">ESPACIOS DISPONIBLES</label>
+                    <input formControlName="asientosDisponibles" type="number" class="form-control mb-0" max="20"
+                        required>
+                    <div *ngIf="createTripForm.get('asientosDisponibles')?.invalid && createTripForm.get('asientosDisponibles')?.touched"
+                        class="text-danger">
+                        Espacios es requerido y debe ser entre 1 y 4.
+                    </div>
+                </div>
+
+
+
+                <!-- Aceptas mascotas -->
+                <div class="text-start mt-4">
+                    <label for="aceptaMascotas" class="form-label">¿ACEPTAS MASCOTAS?</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="aceptaMascotas" [value]="true">
+                        <label class="form-check-label" for="aceptaMascotas">Sí</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="aceptaMascotas" [value]="false">
+                        <label class="form-check-label" for="aceptaMascotas">No</label>
+                    </div>
+                </div>
+
+                <!-- Aceptas que fumen -->
+                <div class="text-start mt-4 pb-3">
+                    <label for="aceptaFumar" class="form-label">¿ACEPTAS QUE FUMEN?</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="aceptaFumar" [value]="true">
+                        <label class="form-check-label" for="aceptaFumar">Sí</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="aceptaFumar" [value]="false">
+                        <label class="form-check-label" for="aceptaFumar">No</label>
+                    </div>
+                </div>
+                <!-- Mapa con la ruta de origen a destino -->
+                <app-google-maps [origin]="{ lat: originLat, lng: originLng }"
+                    [destination]="{ lat: destinationLat, lng: destinationLng }">
+                </app-google-maps>
+
+                <div class="text-start mt-4 ">
+                    <label class="form-label">DISTANCIA: {{travelDistance}}</label><br>
+                    <label class="form-label">TIEMPO: {{travelTime}}</label><br>
+
+                </div>
+            </div>
+
+            <div class="p-4 pt-0">
+                <!-- Mostrar el botón de "Cargar Cambios" si estamos editando -->
+                <button *ngIf="tripId" type="button" class="btn btn-black btn-lg poppins-bold" (click)="updateTrip()"
+                    [disabled]="createTripForm.invalid">
+                    Cargar Cambios
+                </button>
+
+                <!-- Mostrar el botón de "Publicar Viaje" si no estamos editando -->
+                <button *ngIf="!tripId" type="submit" class="btn btn-black btn-lg poppins-bold"
+                    [disabled]="createTripForm.invalid">
+                    Publicar Viaje
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-3 shadow-lg p-4 m-4 text-center bg-white">
+            <!-- Header del Modal -->
+            <div class="modal-header">
+
+                <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Calcular Gastos</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Cuerpo del Modal -->
+            <div class="modal-body">
+
+                <p class="text-muted text-uppercase" style="font-size: 0.9rem;">
+                    EL CÁLCULO SE HACE EN BASE A TU VEHÍCULO CARGADO, CANTIDAD DE KILÓMETROS A
+                    RECORRER Y PRECIO ACTUAL DEL GNC Y/O NAFTA PREMIUM
+                </p>
+
+                <!-- Input para Kilómetros por litro -->
+                <div class="text-start mt-4">
+                    <label for="kmPorLitro" class="form-label">KILÓMETROS POR LITRO QUE RINDE TU
+                        AUTO</label>
+                    <input id="kmPorLitro" type="number" class="form-control mb-0" [(ngModel)]="kmPorLitro"
+                        (input)="calcularCosto()" name="kmPorLitro" required>
+                </div>
+
+                <!-- Input para Precio de Nafta -->
+                <div class="text-start mt-4">
+                    <label for="precioNafta" class="form-label">PRECIO NAFTA</label>
+                    <input id="precioNafta" type="number" class="form-control mb-0" [(ngModel)]="precioNafta"
+                        (input)="calcularCosto()" name="precioNafta" required>
+                </div>
+
+
+                <!-- Resultado del costo calculado -->
+                <div class="text-center mt-4">
+                    <label for="precioTotal" class="form-label" style="font-weight: bold;">PRECIO
+                        TOTAL ESTIMADO EN $</label>
+                    <input id="precioTotal" type="text" class="form-control bg-success text-white text-center"
+                        style="font-size: 1.5rem;" disabled [value]="'$' + (costoTotal | number:'1.0-0')">
+                </div>
+
+                <!-- Advertencia -->
+                <p class="text-danger text-uppercase mt-4" style="font-size: 0.8rem;">
+                    SE ENCUENTRA PROHIBIDO LUCRAR CON EL VIAJE. SOLAMENTE SE COMPARTEN GASTOS Y
+                    EXISTEN TOPES MÁXIMOS. EVITE SER SUSPENDIDO.
+                </p>
+            </div>
+            <!-- Footer del Modal -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="agregarCosto()"  data-bs-dismiss="modal">Agregar
+                    Costo</button>
+            </div>
+        </div>
+    </div>
+</div>

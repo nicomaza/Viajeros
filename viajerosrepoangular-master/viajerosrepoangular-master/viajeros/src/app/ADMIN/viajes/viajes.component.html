@@ -1,0 +1,137 @@
+<div class="container">
+  <h2 class="mt-4">Listado de Viajes</h2>
+  <p>Aquí puedes ver el listado de todos los viajes según su estado.</p>
+  <hr class="my-4">
+
+  <!-- Fila para el buscador con ícono de limpiar -->
+  <!-- Fila para el buscador con ícono de limpiar -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="searchInput" class="form-label">Buscar en la tabla</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="searchInput" [(ngModel)]="searchText" (input)="searchTable()"
+          placeholder="Escribe para buscar...">
+        <button class="clean" (click)="limpiarFiltros()" title="Limpiar filtros">
+          <i class="bi bi-trash"></i> Limpiar
+        </button>
+        <button class="clean" (click)="generatePDF()">Descargar PDF</button>
+      </div>
+     
+    </div>
+  </div>
+
+
+  
+  <!-- Fila para el dropdown de filtros -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="filterDropdown" class="form-label">Seleccionar tipo de filtro</label>
+      <div class="dropdown">
+        <button class="btn btn-dark dropdown-toggle w-100" type="button" id="filterDropdown" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          Seleccionar Filtro
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+          <li><a class="dropdown-item" (click)="filterOption = 'estado'">Filtrar por estado</a></li>
+          <li><a class="dropdown-item" (click)="filterOption = 'fecha'">Filtrar por fechas</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros Condicionales -->
+  <!-- Filtro por estado -->
+  <div class="row mb-3" *ngIf="filterOption === 'estado'">
+    <div class="col-md-6">
+      <label for="estado" class="form-label">Filtrar por estado</label>
+      <form [formGroup]="estadoForm">
+        <select class="form-control" formControlName="estado" (change)="filtrarPorEstado()">
+          <option value="TODOS">Todos</option>
+          <option value="IN PROGRESS">En Progreso</option>
+          <option value="FINISHED">Finalizados</option>
+          <option value="DELETED">Eliminados</option>
+          <option value="CREATED">Creados</option>
+        </select>
+      </form>
+    </div>
+  </div>
+
+  <!-- Filtro por fechas -->
+  <div class="row mb-3" *ngIf="filterOption === 'fecha'">
+    <div class="col-md-4">
+      <label for="startDate" class="form-label">Fecha de Inicio</label>
+      <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate" (change)="isEndDateValid()" />
+    </div>
+    <div class="col-md-4">
+      <label for="endDate" class="form-label">Fecha de Fin</label>
+      <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate" (change)="isEndDateValid()" />
+      <small *ngIf="!isEndDateValid()" class="text-danger">La fecha de fin debe ser mayor o igual a la fecha de
+        inicio.</small>
+    </div>
+    <div class="col-md-4">
+      <label for="endDate" class="form-label">Realizar búsqueda</label>
+      <button class="btn btn-dark w-100" (click)="buscarPorFecha()" [disabled]="!areDatesValid()">Buscar</button>
+    </div>
+  </div>
+
+
+  <!-- Tabla de viajes -->
+  <table class="table table-striped text-center"  id="viajesTable">
+    <thead>
+      <tr>
+        <th scope="col">Nombre del Chofer</th>
+        <th scope="col">Pasajeros</th>
+        <th scope="col">Origen</th>
+        <th scope="col">Destino</th>
+        <th scope="col">Fecha de Inicio</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let viaje of filteredViajes">
+        <td>{{ viaje.driverName }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let passenger of viaje.passengers">{{ passenger }}</li>
+          </ul>
+        </td>
+        <td>{{ viaje.origin }}</td>
+        <td>{{ viaje.destination }}</td>
+        <td>{{ viaje.startDate | date: 'dd-MM-yyyy' }}</td>
+
+        <td>
+          <span class="badge" [ngClass]="{
+                      'bg-success': viaje.status === 'FINISHED',
+                      'bg-warning': viaje.status === 'PENDING' || viaje.status === 'IN PROGRESS',
+                      'bg-info': viaje.status === 'CREATED',
+                      'bg-danger': viaje.status === 'CANCELED',
+                      'bg-secondary': viaje.status === 'DELETED'
+                  }">
+            {{ formatStatus(viaje.status) }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination-controls mt-3 text-center">
+  <nav aria-label="Paginación de viajes">
+    <ul class="pagination justify-content-center">
+      <!-- Botón de página anterior -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="previousPage()">Anterior</a>
+      </li>
+
+      <!-- Números de página -->
+      <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+
+      <!-- Botón de página siguiente -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="nextPage()">Siguiente</a>
+      </li>
+    </ul>
+  </nav>
+</div>

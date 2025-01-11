@@ -1,0 +1,86 @@
+<div *ngIf="userIsAdm !== null; else loading">
+  <div *ngIf="userIsAdm; else normalLayout">
+    <!-- Layout del administrador -->
+    <div class="container-fluid">
+      <div class="row flex-nowrap">
+        <div class="bg-dark col-auto col-md-4 col-lg-3 min-vh-100 d-flex flex-column justify-content-between">
+          <div class="bg-dark p-2">
+            <a class="d-flex text-decoration-none mt-1 justify-content-center align-items-center text-white text-center">
+              <span class="fs-4 d-none d-md-inline text-center">Menu Administrador</span>
+            </a>
+            <ul class="nav nav-pills flex-column mt-4">
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/stadistics'">
+                  <i class="bi bi-graph-up d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Estadísticas</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/viajes'">
+                  <i class="bi bi-geo-alt d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Viajes</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/manage-users'">
+                  <i class="bi bi-people d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Usuarios</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/vehiculos'">
+                  <i class="bi bi-people d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Vehiculos</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/reintegros'">
+                  <i class="bi bi-cash-coin d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Reintegros</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/incidentes'">
+                  <i class="bi bi-exclamation-octagon d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Incidentes</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" [routerLink]="'admin/senas'">
+                  <i class="bi bi-hand-index-thumb d-lg-none" style="font-size: 1.5rem;"></i>
+                  <span class="fs-5 ms-3 d-none d-lg-inline">Señas</span>
+                </a>
+              </li>
+            </ul>
+            
+            
+          </div>
+
+          <!-- Sección del botón de logout al final -->
+          <div class="bg-dark p-2">
+            <hr class="text-white">
+            <button class="btn btn-danger w-100" (click)="logout()">Logout</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- El layout normal para otros usuarios -->
+  <ng-template #normalLayout>
+    <router-outlet></router-outlet>
+  </ng-template>
+</div>
+
+<!-- Mensaje de carga mientras se determina si el usuario es admin -->
+<ng-template #loading>
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

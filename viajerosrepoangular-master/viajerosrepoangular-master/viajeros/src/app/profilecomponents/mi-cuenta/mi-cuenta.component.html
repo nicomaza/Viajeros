@@ -1,0 +1,51 @@
+<div class=" container d-flex align-items-center justify-content-center min-vh-100">
+
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white ">
+        <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Editar datos de inicio de sesion</h1>
+        <label for="" class="dmsans">Podras actualizar claves o modificar tu cuenta</label><br>
+        <label for=""><a [routerLink]="'/edit-profile'">Volver</a></label>
+
+        <form [formGroup]="updateuserForm" (ngSubmit)="updateUser()">
+            <div class="p-4 pt-0">
+
+
+                <div class="text-start mt-4">
+                    <label for="email" class="form-label">E-MAIL / USUARIO NUEVO</label>
+                    <input formControlName="email" type="email" class="form-control"
+                        [ngClass]="{'is-valid': updateuserForm.get('email')?.valid && updateuserForm.get('email')?.touched, 
+                                   'is-invalid': updateuserForm.get('email')?.invalid && updateuserForm.get('email')?.touched}" required>
+                    <div *ngIf="updateuserForm.get('email')?.invalid && updateuserForm.get('email')?.touched"
+                        class="text-danger">
+                        Debe ser un email válido
+                    </div>
+                </div>
+
+                
+
+
+
+
+
+                <div class="py-2 px-4 text-centers">
+                    <button type="submit" class="btn btn-black btn-lg poppins-bold"
+                        [disabled]="updateuserForm.invalid">Actualizar usuario</button>
+                </div>
+
+                
+
+                <div class="py-2 px-4 text-centers">
+                    <button type="button" class="btn btn-black btn-lg poppins-bold"
+                        (click)="updatepassword()">Cambiar password</button>
+                </div>
+
+
+                <div class="py-2 px-4 text-centers">
+                    <button type="button" class="btn btn-black btn-lg poppins-bold" style="background-color: red;"
+                       (click)="deleteAccount()">ELIMINAR CUENTA</button>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+</div>

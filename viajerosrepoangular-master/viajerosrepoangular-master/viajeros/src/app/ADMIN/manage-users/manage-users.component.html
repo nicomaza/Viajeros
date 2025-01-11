@@ -1,0 +1,144 @@
+<!-- reintegros.component.html -->
+<div class="container">
+  <h2 class="mt-4">Usuarios</h2>
+  <p>Podes hacer modificaciones en el usuario</p>
+  <hr class="my-4">
+  <div class="container mt-4">
+    <!-- Buscador y Filtro -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="text" class="form-control" placeholder="Buscar por nombre, email, teléfono o fecha (dd/MM/yyyy)..."
+          [(ngModel)]="searchTerm" (input)="filterUsers()">
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" [(ngModel)]="filtroEstado" (change)="filterUsers()">
+          <option value="">Todos los estados</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+    </div>
+    <!-- Tabla de Usuarios -->
+    <table class="table table-striped text-center">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Fecha de Registro</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>{{ user.name }} {{ user.lastname }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>{{ user.registrationDate | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <span [ngClass]="{'text-success': !user.deleted, 'text-danger': user.deleted}">
+              {{ user.deleted ? 'Inactivo' : 'Activo' }}
+            </span>
+          </td>
+          <td>
+            <!-- Dropdown de Acciones -->
+            <div class="dropdown">
+              <button class="btn btn-dark dropdown-toggle" type="button" id="accionesDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="accionesDropdown">
+                <li><a class="dropdown-item" [routerLink]="['/admin/edit-user-ad',user.idUser]">Editar</a></li>
+                <li><a class="dropdown-item text-danger" (click)="deleteAccount(user)">Eliminar</a></li>
+                <li><a class="dropdown-item" (click)="selectUser(user)" data-bs-toggle="modal"
+                    data-bs-target="#roleModal">Cambiar Rol</a></li>
+
+
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+<!-- modal bloquear -->
+
+<div class="modal fade" id="blockUserModal" tabindex="-1" aria-labelledby="blockUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="blockUserModalLabel">Bloquear Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que deseas bloquear a este usuario?</p>
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comentario:</label>
+          <textarea [(ngModel)]="commentblock" id="comment" class="form-control" rows="3"
+            placeholder="Razón del bloqueo"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="blockUser()">Bloquear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Modal ROL-->
+<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="roleModalLabel">Editar Rol del Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="roleSelect" class="form-label">Seleccione el Rol:</label>
+            <select class="form-select" id="roleSelect" [(ngModel)]="rolid" name="role">
+              <option value="1">Administrador</option>
+              <option value="2">Usuario</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="updateRol()">Guardar
+          Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pagination-controls mt-3 text-center">
+  <nav aria-label="Paginación de usuarios">
+    <ul class="pagination justify-content-center">
+      <!-- Botón de página anterior -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="previousPage()">Anterior</a>
+      </li>
+
+      <!-- Números de página -->
+      <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+
+      <!-- Botón de página siguiente -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="nextPage()">Siguiente</a>
+      </li>
+    </ul>
+  </nav>
+</div>

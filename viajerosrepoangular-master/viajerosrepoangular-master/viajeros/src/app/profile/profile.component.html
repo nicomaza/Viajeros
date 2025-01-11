@@ -1,0 +1,58 @@
+<div class=" d-flex align-items-center justify-content-center">
+
+    <div class=" d-flex align-items-center justify-content-center ">
+
+        <div class="align-items-center rounded-5  border shadow-lg p-4 m-4 text-center bg-white ">
+
+            <h1 class=" pb-0 text-center" style="font-size: 50px; font-weight: bold;">Perfil</h1>
+            <div class="container mt-4">
+                <!-- Nombre completo del usuario -->
+     
+                <h2 class="text-center" style="font-size: 2rem; font-weight: bold; color: #0056b3;">
+                    {{ userdata.name }} {{ userdata.lastname }}
+                </h2>
+                
+                
+            
+              
+                <!-- Calificación en estrellas -->
+                <div class="text-center mt-2">
+                    <div *ngIf="userSummary?.averageRating as avgRating">
+                        <ng-container *ngFor="let star of [].constructor(avgRating); let i = index">
+                            <i class="bi bi-star-fill" style="font-size: 2rem; color: #ffc107;"></i>
+                        </ng-container>
+                        <ng-container *ngFor="let star of [].constructor(5 - avgRating); let i = index">
+                            <i class="bi bi-star" style="font-size: 2rem; color: #ccc;"></i>
+                        </ng-container>
+                    </div>
+                </div>
+            
+                <!-- Promedio de puntaje -->
+                <div class="text-center mt-3">
+                    <h3 class="mt-2" style="font-size: 1.5rem; font-weight: bold">
+                        Calificacion Promedio: <span>{{ userSummary?.averageRating | number: '1.1-1' }}</span>
+                    </h3>
+                </div>
+            </div>
+            
+            
+          
+
+    
+            <div class="p-4">
+                <button class="btn btn-red btn-lg poppins-bold my-3" (click)="logout()">Cerrar sesion</button>
+                <button class="btn btn-black btn-lg poppins-bold mb-3" [routerLink]="'/edit-profile'">Editar perfil</button>
+                <button class="btn btn-black btn-lg poppins-bold mb-3" [routerLink]="'/mis-viajes'">Mis viajes</button>
+                <button class="btn btn-black btn-lg poppins-bold mb-3" [routerLink]="'/faqs'">Preguntas Frecuentes</button>
+
+
+
+            </div>
+
+
+            <app-phone-navbar></app-phone-navbar>
+
+        </div>
+
+    </div>
+</div>

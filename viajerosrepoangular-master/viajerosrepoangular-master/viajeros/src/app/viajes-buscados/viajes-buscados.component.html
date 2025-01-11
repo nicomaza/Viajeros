@@ -1,0 +1,312 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white w-100">
+    <label class="py-2"><a [routerLink]="'/search-trip'">Volver</a></label>
+
+    @if(!flagAllTrips){
+    <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Viajes que coinciden</h1>
+    <label class="dmsans">Aquí puedes encontrar los viajes que coinciden con tu búsqueda</label><br>
+    <div class="row mt-4 d-flex justify-content-center">
+      <!-- Listado de Cards de Viajes -->
+      @for (trip of matchListrip; track $index) {
+      <div class="card shadow-sm mb-4 bg-light border-0 rounded-3 mx-2"
+        style="width: 20rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.03)'"
+        onmouseout="this.style.transform='scale(1)'">
+        <div class="card-body text-center">
+          <!-- Origen -->
+          <!-- Origen -->
+          <div class="mb-3">
+            <label for="origenInput" class="d-block mb-2" style="font-weight: bold;">Origen</label>
+            <input id="origenInput" type="button" value="{{trip.origin}}" class="form-control btn-form" readonly>
+          </div>
+
+          <!-- Destino -->
+          <div class="mb-3">
+            <label for="destinoInput" class="d-block mb-2" style="font-weight: bold;">Destino</label>
+            <input id="destinoInput" type="button" value="{{trip.destination}}" class="form-control btn-form" readonly>
+          </div>
+
+
+          <p class="card-text mb-1"><strong>Chofer:</strong> {{trip.driverName}}</p>
+          <p class="card-text mb-1"><strong>Lugares libres:</strong> <span class="" style="color: red;">
+              {{trip.availableSeats}}</span></p>
+          <p class="card-text mb-1"><strong>Fecha:</strong> {{ trip.departureTime | date: 'EEEE d MMMM y' }}</p>
+          <p class="card-text mb-3"><strong>Vehiculo:</strong> {{trip.vehicleName}}</p>
+
+
+          <!-- Estrellas de calificación y Botón Ver Más en línea -->
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Estrellas de calificación -->
+            <div class="d-flex">
+              <!-- Mostrar estrellas amarillas según el rating -->
+              <ng-container *ngFor="let star of [].constructor(round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_yellow.png" alt="star" class="rounded-5"
+                    style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+
+              <!-- Mostrar estrellas grises para el resto (hasta 5 estrellas) -->
+              <ng-container *ngFor="let star of [].constructor(5 - round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_gray.png" alt="star" class="rounded-5" style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+            </div>
+
+
+            <!-- Botón Ver Más -->
+            <button class="btn btn-outline-primary btn-sm" (click)="openTripDetails(trip)">Ver más</button>
+
+          </div>
+        </div>
+      </div>
+      }
+
+    </div>
+
+    <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Viajes que pueden interesarte</h1>
+    <label class="dmsans">Viajes cercanos a tu fecha de salida o lugar de salida</label><br>
+
+    <div class="row mt-4 d-flex justify-content-center">
+      <!-- Ejemplo de card -->
+      @for (trip of matchoriginListrip; track $index) {
+      <div class="card shadow-sm mb-4 bg-light border-0 rounded-3 mx-2"
+        style="width: 20rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.03)'"
+        onmouseout="this.style.transform='scale(1)'">
+        <div class="card-body text-center">
+          <!-- Origen -->
+          <!-- Origen -->
+          <div class="mb-3">
+            <label for="origenInput" class="d-block mb-2" style="font-weight: bold;">Origen</label>
+            <input id="origenInput" type="button" value="{{trip.origin}}" class="form-control btn-form" readonly>
+          </div>
+
+          <!-- Destino -->
+          <div class="mb-3">
+            <label for="destinoInput" class="d-block mb-2" style="font-weight: bold;">Destino</label>
+            <input id="destinoInput" type="button" value="{{trip.destination}}" class="form-control btn-form" readonly>
+          </div>
+
+
+          <p class="card-text mb-1"><strong>Chofer:</strong> {{trip.driverName}}</p>
+          <p class="card-text mb-1"><strong>Lugares libres:</strong> <span class="" style="color: red;">
+              {{trip.availableSeats}}</span></p>
+          <p class="card-text mb-1"><strong>Fecha:</strong> {{ trip.departureTime | date: 'EEEE d MMMM y' }}</p>
+          <p class="card-text mb-3"><strong>Vehiculo:</strong> {{trip.vehicleName}}</p>
+
+
+          <!-- Estrellas de calificación y Botón Ver Más en línea -->
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Estrellas de calificación -->
+            <div class="d-flex">
+              <!-- Mostrar estrellas amarillas según el rating -->
+              <ng-container *ngFor="let star of [].constructor(round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_yellow.png" alt="star" class="rounded-5"
+                    style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+
+              <!-- Mostrar estrellas grises para el resto (hasta 5 estrellas) -->
+              <ng-container *ngFor="let star of [].constructor(5 - round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_gray.png" alt="star" class="rounded-5" style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+            </div>
+
+
+            <!-- Botón Ver Más -->
+            <button class="btn btn-outline-primary btn-sm" (click)="openTripDetails(trip)">Ver más</button>
+
+          </div>
+        </div>
+      </div>
+      }
+
+      @for (trip of allListcreatedTrip; track $index) {
+      <div class="card shadow-sm mb-4 bg-light border-0 rounded-3 mx-2"
+        style="width: 20rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.03)'"
+        onmouseout="this.style.transform='scale(1)'">
+        <div class="card-body text-center">
+          <!-- Origen -->
+          <!-- Origen -->
+          <div class="mb-3">
+            <label for="origenInput" class="d-block mb-2" style="font-weight: bold;">Origen</label>
+            <input id="origenInput" type="button" value="{{trip.origin}}" class="form-control btn-form" readonly>
+          </div>
+
+          <!-- Destino -->
+          <div class="mb-3">
+            <label for="destinoInput" class="d-block mb-2" style="font-weight: bold;">Destino</label>
+            <input id="destinoInput" type="button" value="{{trip.destination}}" class="form-control btn-form" readonly>
+          </div>
+
+
+          <p class="card-text mb-1"><strong>Chofer:</strong> {{trip.driverName}}</p>
+          <p class="card-text mb-1"><strong>Lugares libres:</strong> <span class="" style="color: red;">
+              {{trip.availableSeats}}</span></p>
+          <p class="card-text mb-1"><strong>Fecha:</strong> {{ trip.departureTime | date: 'EEEE d MMMM y' }}</p>
+          <p class="card-text mb-3"><strong>Vehiculo:</strong> {{trip.vehicleName}}</p>
+
+
+          <!-- Estrellas de calificación y Botón Ver Más en línea -->
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Estrellas de calificación -->
+            <div class="d-flex">
+              <!-- Mostrar estrellas amarillas según el rating -->
+              <ng-container *ngFor="let star of [].constructor(round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_yellow.png" alt="star" class="rounded-5"
+                    style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+
+              <!-- Mostrar estrellas grises para el resto (hasta 5 estrellas) -->
+              <ng-container *ngFor="let star of [].constructor(5 - round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_gray.png" alt="star" class="rounded-5" style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+            </div>
+
+
+            <!-- Botón Ver Más -->
+            <button class="btn btn-outline-primary btn-sm">Ver más</button>
+          </div>
+        </div>
+      </div>
+      }
+
+    </div>
+    }
+    @if(flagAllTrips){
+
+    <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Todos los viajes</h1>
+    <label class="dmsans">Aquí puedes encontrar todos los viajes disponibles</label><br>
+    <div class="row mt-4 d-flex justify-content-center">
+      @for (trip of alltrips; track $index) {
+      <div class="card shadow-sm mb-4 bg-light border-0 rounded-3 mx-2"
+        style="width: 20rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.03)'"
+        onmouseout="this.style.transform='scale(1)'">
+        <div class="card-body text-center">
+          <!-- Origen -->
+          <!-- Origen -->
+          <div class="mb-3">
+            <label for="origenInput" class="d-block mb-2" style="font-weight: bold;">Origen</label>
+            <input id="origenInput" type="button" value="{{trip.origin}}" class="form-control btn-form" readonly>
+          </div>
+
+          <!-- Destino -->
+          <div class="mb-3">
+            <label for="destinoInput" class="d-block mb-2" style="font-weight: bold;">Destino</label>
+            <input id="destinoInput" type="button" value="{{trip.destination}}" class="form-control btn-form" readonly>
+          </div>
+
+
+          <p class="card-text mb-1"><strong>Chofer:</strong> {{trip.driverName}}</p>
+          <p class="card-text mb-1"><strong>Lugares libres:</strong> <span class="" style="color: red;">
+              {{trip.availableSeats}}</span></p>
+          <p class="card-text mb-1"><strong>Fecha:</strong> {{ trip.departureTime | date: 'EEEE d MMMM y' }}</p>
+          <p class="card-text mb-3"><strong>Vehiculo:</strong> {{trip.vehicleName}}</p>
+
+
+          <!-- Estrellas de calificación y Botón Ver Más en línea -->
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Estrellas de calificación -->
+            <div class="d-flex">
+              <!-- Mostrar estrellas amarillas según el rating -->
+              <ng-container *ngFor="let star of [].constructor(round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_yellow.png" alt="star" class="rounded-5"
+                    style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+
+              <!-- Mostrar estrellas grises para el resto (hasta 5 estrellas) -->
+              <ng-container *ngFor="let star of [].constructor(5 - round(trip.driverRating)); let i = index">
+                <div class="p-0">
+                  <img src="../../assets/star_gray.png" alt="star" class="rounded-5" style="width: 20px; height: 20px;">
+                </div>
+              </ng-container>
+            </div>
+
+
+            <!-- Botón Ver Más -->
+            <button class="btn btn-outline-primary btn-sm" (click)="openTripDetails(trip)">Ver más</button>
+
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="tripDetailsModal" tabindex="-1" aria-labelledby="tripDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-light shadow-lg rounded-3">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tripDetailsModalLabel">Detalles del Viaje</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body text-center" *ngIf="selectedTrip">
+        <hr class="mb-3" style="height: 1px; border: none; background-color: #ccc;">
+
+        <!-- Origen, Flecha y Destino -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <div class="d-flex flex-column align-items-center" style="width: 40%;">
+            <label for="">ORIGEN</label>
+            <div class="form-control bg-white text-center border-0 shadow-sm mb-0" style="font-weight: bold;">
+              {{selectedTrip.origin}}</div>
+          </div>
+          <img src="../../assets/flecha_red.png" alt="flecha" class="mx-2" style="width: 30px; height: 30px;">
+          <div class="d-flex flex-column align-items-center" style="width: 40%;">
+            <label for="">DESTINO</label>
+            <div class="form-control bg-white text-center border-0 shadow-sm mb-0" style="font-weight: bold;">
+              {{selectedTrip.destination}}</div>
+          </div>
+        </div>
+
+        <!-- Fecha centrada -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <div class="form-control bg-dark text-white text-center border-0 shadow-sm mb-3"
+            style="width: 80%; font-weight: bold;">
+            {{ selectedTrip.departureTime | date: 'EEEE d MMMM y' }}
+          </div>
+        </div>
+        <hr class="mb-3 mt-3" style="height: 1px; border: none; background-color: #ccc;">
+
+        <!-- Otros datos -->
+        <div class="text-start ms-3">
+          <p class="mb-1"><strong>Horario de salida:</strong> {{ selectedTrip.departureTime | date: 'HH:mm' }}</p>
+          <p class="mb-1"><strong>Tiempo aproximado:</strong> {{ selectedTrip.estimatedDuration }}</p>
+          <p class="mb-1"><strong>Mascotas:</strong> {{ selectedTrip.petsAllowed ? 'Sí' : 'No' }}</p>
+          <p class="mb-1"><strong>Fumadores:</strong> {{ selectedTrip.smokersAllowed ? 'Sí' : 'No' }}</p>
+          <p class="mb-1"><strong>Vehículo:</strong> {{ selectedTrip.vehicleName }}</p>
+          <p class="mb-1 text-center"><strong>Lugares disponibles: </strong> <span
+              style="font-size: 1.5rem; color: red;">{{selectedTrip.availableSeats}}</span></p>
+        </div>
+
+        <!-- Mapa de Google Maps -->
+        <div class="mb-3 mt-4">
+          <app-google-maps [origin]="{ lat: originLat, lng: originLng }"
+            [destination]="{ lat: destinationLat, lng: destinationLng }"></app-google-maps>
+        </div>
+      </div>
+      <!-- Modal de Detalles del Viaje -->
+      <div class="modal-footer">
+        <!-- Solo mostrar el botón si NO es chofer -->
+        <button *ngIf="!isChofer && !soypasajero && selectedTrip?.availableSeats != 0" type="button" class="btn btn-primary btn-lg w-100" (click)="goToChat()">Chatear y
+          Subirme</button>
+        <div *ngIf="isChofer" class="btn btn-danger btn-lg w-100">Sos el chofer</div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+

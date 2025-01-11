@@ -1,0 +1,40 @@
+.message {
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  .passenger {
+    text-align: right;
+  }
+  
+  .driver {
+    text-align: left;
+  }
+  .btn-orange {
+    background-color: #f57c00; /* Color naranja */
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-orange:hover {
+    background-color: #e65100; /* Naranja más oscuro al hacer hover */
+  }
+  
+  .btn-orange:focus, .btn-orange:active {
+    outline: none;
+    box-shadow: none;
+    background-color: #e65100;
+  }
+  
+  .btn-orange:disabled {
+    background-color: #ffcc80; /* Naranja claro para botón deshabilitado */
+    color: #fff5e0;
+    cursor: not-allowed;
+  }
+  

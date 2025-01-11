@@ -1,0 +1,72 @@
+<div class=" container d-flex align-items-center justify-content-center min-vh-100">
+
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white ">
+        <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Informacion bancaria</h1>
+        <label for="" class="dmsans">Datos para realizar depositos y pagos</label><br>
+        <label for="" class="py-2"><a [routerLink]="'/edit-profile'">Volver</a></label>
+
+        <form [formGroup]="updatebankForm" (ngSubmit)="updateBank()">
+            <div class="p-4 pt-1">
+
+
+
+                <div class="text-start mt-0">
+                    <label for="pass" class="form-label">CUIL</label>
+                    <input formControlName="cuil" type="number" class="form-control mb-0"
+                        [ngClass]="{'is-valid': updatebankForm.get('cuil')?.valid && updatebankForm.get('cuil')?.touched, 
+                                   'is-invalid': updatebankForm.get('cuil')?.invalid && updatebankForm.get('cuil')?.touched}" required>
+                    <div *ngIf="updatebankForm.get('cuil')?.invalid && updatebankForm.get('cuil')?.dirty"
+                        class="text-danger">
+                        Cuil incorrecto
+                    </div>
+                </div>
+
+
+
+                <div class="text-start mt-4">
+                    <label for="telefono" class="form-label">BANCO</label>
+
+                    <select formControlName="bank" name="" id="" class="form-control" required>
+                        <option value="Santander">Santander</option>
+                        <option value="Hsbc">NARANJA X</option>
+                        <option value="Hsbc">BBVA</option>
+                        <option value="Hsbc">MACRO</option>
+                        <option value="Hsbc">BANCO DE CORDOBA</option>
+                        <option value="Hsbc">BNA</option>
+                        <option value="Hsbc">GALICIA</option>
+                        <option value="Hsbc">HSBC</option>
+                        <option value="Hsbc">UALA</option>
+                    </select>
+
+                </div>
+
+
+
+
+                @if (updatebankForm.get('bank')?.invalid &&updatebankForm.get('bank')?.touched) {
+                <p class="text-danger text-start">Debe elegir almenos un banco</p>
+                }
+
+
+                <div class="text-start mt-4">
+                    <label for="pass" class="form-label">CBU/CVU</label>
+                    <input formControlName="cbu" type="number" class="form-control mb-0"
+                        [ngClass]="{'is-valid': updatebankForm.get('cbu')?.valid && updatebankForm.get('cbu')?.touched, 
+                                   'is-invalid': updatebankForm.get('cbu')?.invalid && updatebankForm.get('cbu')?.touched}" required>
+                    <div *ngIf="updatebankForm.get('cbu')?.invalid && updatebankForm.get('cbu')?.dirty"
+                        class="text-danger">
+                        CBU / CVU incorrecto
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-4">
+                <button type="submit" class="btn btn-black btn-lg poppins-bold"
+                    [disabled]="updatebankForm.invalid">Enviar</button>
+            </div>
+        </form>
+
+
+    </div>
+</div>

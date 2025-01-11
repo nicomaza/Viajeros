@@ -1,0 +1,28 @@
+.btn-black {
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    border-radius: 10px; /* Hace el botón redondeado */
+    width: 100%; 
+    border: none; /* Sin borde */
+    transition: background-color 0.3s, transform 0.3s; /* Transición suave en hover */
+    font-weight: bold;
+    padding: 10px 20px; /* Aumenta el padding para que sea más amplio */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    display: flex; /* Flexbox para alinear el contenido */
+    align-items: center; /* Centra el contenido verticalmente */
+}
+
+.btn-black i, .btn-black svg {
+    margin-right: 15px; /* Añade espacio entre el icono y el texto */
+}
+
+.btn-black:hover {
+    background-color: #333; /* Cambia el fondo al hacer hover */
+    transform: translateY(-2px); /* Efecto sutil de "flotar" */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada al hacer hover */
+}
+
+.poppins-bold {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600; /* Usa un peso más grueso para una apariencia moderna */
+}

@@ -1,0 +1,47 @@
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100" *ngIf="viajeSelected">
+    <div class="text-center rounded-3 shadow-lg p-4 m-4 bg-white" style="width: 90%; max-width: 400px;">
+        <label class="py-2"><a class="link" (click)="gotochat()">Volver</a></label>
+        <!-- Header del Chofer -->
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <div class="ms-3 text-center">
+                <h5 class="m-3">Chofer: {{ viajeSelected.driverName }}</h5>
+                <p class="m-0 text-center" style="font-size: 0.9rem;">
+                    {{ viajeSelected.origin }} - {{ viajeSelected.destination }}
+                </p>
+                <p class="m-0 text-center" style="font-size: 0.9rem;">
+                    {{ viajeSelected.date | date:'dd MMMM yyyy hh:mm a' }}
+                </p>
+            </div>
+        </div>
+
+
+
+        <!-- Gasto Total y Monto a Pagar al Chofer -->
+        <div class="my-3 p-3 bg-light" style="background-color: #f8f9fa;">
+            <h5 class="text-center">Gasto Total:</h5>
+            <h3 class="text-center"><strong>{{ montototal | currency:'ARS':'symbol':'1.0-0' }}</strong></h3>
+            <p class="text-center text-muted" style="font-size: 0.9rem;">Este es el gasto total que incluye todos los
+                pasajeros del viaje y chofer.</p>
+        </div>
+
+        <div class="my-3 p-3 bg-success text-white rounded-3">
+            <h4 class="text-center">Tienes que abonar al chofer personalmente el saldo de:</h4>
+            @if (montototal !=10000) {
+                <h2 class="text-center"><strong>{{ saldoAPagar() | currency:'ARS':'symbol':'1.0-0' }}</strong></h2>
+            }@else {
+                <h2 class="text-center"><strong>NO CORRESPONDE ABONAR NADA MAS QUE LA SEñA</strong></h2>
+            }
+
+        </div>
+
+        <!-- Advertencia -->
+        <p class="text-center text-muted mb-3" style="font-size: 0.85rem;">SE ENCUENTRA PROHIBIDO LUCRAR CON EL VIAJE.
+            SOLAMENTE SE COMPARTEN GASTOS Y EXISTEN TOPES MÁXIMOS. <span class="text-danger">DENUNCIA CUALQUIER CASO DE
+                SOBREPRECIOS</span></p>
+
+        <!-- Botón de Pago -->
+        <button class="btn btn-success w-100 p-2 mb-3" (click)="onSubirmeClick()">Señar $2000</button>
+
+        <div id="wallet_container"></div>
+    </div>
+</div>

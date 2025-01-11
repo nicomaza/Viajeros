@@ -1,0 +1,108 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white">
+        <div class="p-4 pt-0">
+            <button type="button" class="btn btn-black btn-lg poppins-bold" (click)="alltrips()">Ver todos los viajes</button>
+        </div>
+        <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Buscar viajes</h1>
+        <label class="dmsans">Busca viajes disponibles según selección</label><br>
+      
+        <label class="py-2"><a [routerLink]="'/principal'">Volver</a></label>
+
+        <form [formGroup]="searchTripForm" (ngSubmit)="submitSearchTripForm()">
+            <div class="p-4 pt-1">
+                <!-- Origen -->
+                <div class="text-start mt-0 position-relative">
+                    <label for="origen" class="form-label">ORIGEN</label>
+                    <input formControlName="origen" type="text" class="form-control mb-0" [ngClass]="{'is-valid': searchTripForm.get('origen')?.valid && searchTripForm.get('origen')?.touched, 'is-invalid': searchTripForm.get('origen')?.invalid && searchTripForm.get('origen')?.touched}"
+                        (input)="searchLocalidades('origen')" required autocomplete="off">
+                    <div *ngIf="searchTripForm.get('origen')?.invalid && searchTripForm.get('origen')?.touched" class="text-danger">
+                        Origen es requerido.
+                    </div>
+                    <input formControlName="localidadInicioId" type="hidden">
+                    <div *ngIf="localidadesOrigen.length" class="suggestions-container position-absolute w-100 shadow-sm rounded">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let localidad of localidadesOrigen"
+                                (click)="selectLocalidad('origen', localidad)" (click)="searchLocalidadOrigen()">
+                                {{ localidad.nombre }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Destino -->
+                <div class="text-start mt-4 position-relative">
+                    <label for="destino" class="form-label">DESTINO</label>
+                    <input formControlName="destino" type="text" class="form-control mb-0" [ngClass]="{'is-valid': searchTripForm.get('destino')?.valid && searchTripForm.get('destino')?.touched, 'is-invalid': searchTripForm.get('destino')?.invalid && searchTripForm.get('destino')?.touched}"
+                        (input)="searchLocalidades('destino')" required autocomplete="off">
+                    <div *ngIf="searchTripForm.get('destino')?.invalid && searchTripForm.get('destino')?.touched" class="text-danger">
+                        Destino es requerido.
+                    </div>
+                    <input formControlName="localidadFinId" type="hidden">
+                    <div *ngIf="localidadesDestino.length" class="suggestions-container position-absolute w-100 shadow-sm rounded">
+                        <ul class="list-group">
+                            <li class="list-group-item" *ngFor="let localidad of localidadesDestino"
+                                (click)="selectLocalidad('destino', localidad)" (click)="searchLocalidadDestino()">
+                                {{ localidad.nombre }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Fecha y hora de salida -->
+                <div class="text-start mt-4">
+                    <label for="fechaHoraInicio" class="form-label">FECHA Y HORA DE SALIDA</label>
+                    <input formControlName="fechaHoraInicio" type="datetime-local" class="form-control mb-0" required>
+                    <div *ngIf="searchTripForm.get('fechaHoraInicio')?.invalid && searchTripForm.get('fechaHoraInicio')?.touched" class="text-danger">
+                        Fecha y hora de salida son requeridas.
+                    </div>
+                </div>
+
+                <!-- Aceptas mascotas -->
+                <div class="text-start mt-4">
+                    <label for="aceptaMascotas" class="form-label">¿LLEVAS MASCOTAS?</label><br>
+                    <select formControlName="aceptaMascotas" class="form-control mb-0" required>
+                        <option value="" disabled selected>Seleccionar opción</option>
+                        <option [value]="true">Sí</option>
+                        <option [value]="false">No</option>
+                    </select>
+                </div>
+
+                <!-- Equipaje permitido -->
+                <div class="text-start mt-4">
+                    <label for="equipajePermitido" class="form-label">¿CANTIDAD DE EQUIPAJE?</label><br>
+                    <select formControlName="equipajePermitido" class="form-control mb-0" required>
+                        <option value="" disabled selected>Seleccionar opción</option>
+                        <option [value]="0">Ninguno</option>
+                        <option [value]="1">Pequeño</option>
+                        <option [value]="2">Mediano</option>
+                        <option [value]="3">Grande</option>
+                    </select>
+                </div>
+
+                <!-- Aceptas que fumen -->
+                <div class="text-start mt-4 pb-3">
+                    <label for="aceptaFumar" class="form-label">¿FUMAS?</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="aceptaFumar" [value]="true">
+                        <label class="form-check-label" for="aceptaFumar">Sí</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="aceptaFumar" [value]="false">
+                        <label class="form-check-label" for="aceptaFumar">No</label>
+                    </div>
+                </div>
+
+                <!-- Mapa con la ruta de origen a destino -->
+                <app-google-maps [origin]="{ lat: originLat, lng: originLng }" [destination]="{ lat: destinationLat, lng: destinationLng }"></app-google-maps>
+
+                <div class="text-start mt-4">
+                    <label class="form-label">DISTANCIA: {{travelDistance}}</label><br>
+                    <label class="form-label">TIEMPO: {{travelTime}}</label><br>
+                </div>
+            </div>
+
+            <div class="p-4 pt-0">
+                <button type="submit" class="btn btn-black btn-lg poppins-bold" [disabled]="searchTripForm.invalid">Buscar Viajes</button>
+            </div>
+        </form>
+    </div>
+</div>

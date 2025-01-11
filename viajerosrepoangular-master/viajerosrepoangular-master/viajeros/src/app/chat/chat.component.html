@@ -1,0 +1,49 @@
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+  <div class="text-center rounded-5 shadow-lg p-4 m-4 bg-white">
+
+    <label class="py-2"><a [routerLink]="'/listMenssages'">Volver</a></label>
+
+    <div class="d-flex flex-column align-items-center mb-3">
+      <!-- Verifica si el usuario logueado es el chofer -->
+      <h5 *ngIf="choferId !== userIdConvertedToNumber" class="mb-0">Chofer: {{ tripDetails.driverName }}</h5>
+      <h5 *ngIf="choferId === userIdConvertedToNumber" class="mb-0">Tú eres el chofer de este viaje</h5>
+      <span class="text-muted">Desde {{ tripDetails.origin }} hacia {{ tripDetails.destination }}</span>
+    </div>
+    <button *ngIf="choferId !== userIdConvertedToNumber" type="button" class="btn btn-orange btn-lg w-100"
+      (click)="onSubirmeClick()">
+      Subirme
+    </button>
+    <div class="chat-box p-3 bg-white mb-3" style="height: 300px; overflow-y: auto; border: 1px solid #ccc;">
+      <!-- Lista de mensajes -->
+      <div *ngFor="let message of messageList" class="message"
+        [ngClass]="{'passenger': message.idUsuario !== choferId, 'driver': message.idUsuario === choferId}">
+
+        <!-- Mostrar si el mensaje fue enviado por el chofer o el pasajero -->
+        <strong>
+          <!-- Si el mensaje fue enviado por el chofer -->
+          <ng-container *ngIf="message.idUsuario === choferId">
+            {{ userIdConvertedToNumber === choferId ? 'Tú (Chofer)' : 'Chofer' }}
+          </ng-container>
+
+          <!-- Si el mensaje fue enviado por el pasajero -->
+          <ng-container *ngIf="message.idUsuario !== choferId">
+            {{ userIdConvertedToNumber === message.idUsuario ? 'Tú (Pasajero)' : 'Pasajero' }}
+          </ng-container>
+        </strong>
+
+        {{ message.contenido }}
+
+        <!-- Estado de lectura -->
+        <span *ngIf="message.leido" class="read-status text-success">✔ Leído</span>
+      </div>
+    </div>
+
+    <!-- Input para enviar mensajes -->
+    <div class="d-flex justify-content-center align-items-center">
+      <input type="text" class="form-control align-items-center mb-0 me-3" placeholder="Escribe un mensaje..."
+        [(ngModel)]="messageInput" (keyup.enter)="sendMessage()">
+      <button class="btn btn-dark me-2" (click)="sendMessage()">Enviar</button>
+    </div>
+
+  </div>
+</div>

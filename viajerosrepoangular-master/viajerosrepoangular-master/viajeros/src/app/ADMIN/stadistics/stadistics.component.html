@@ -1,0 +1,59 @@
+<div class="container">
+  <h2 class="mt-4 text-start">Panel Principal</h2>
+  <p class="text-start">Información general del estado del servicio</p>
+  <hr class="my-4">
+
+  <div class="row">
+    <!-- Sección de Usuarios Nuevos por Día -->
+    <div class="col-md-6 mb-4" *ngIf="allDataLoaded">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-center">Usuarios Nuevos por Día</h3>
+          <div class="chart-container" style="position: relative; height: 40vh; width: 100%;">
+            <canvas baseChart [data]="barChartData"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Viajes Finalizados por Mes -->
+    <div class="col-md-6 mb-4" *ngIf="allDataLoaded">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-center">Viajes Finalizados por Mes</h3>
+          <div class="chart-container" style="position: relative; height: 40vh; width: 100%;">
+            <canvas baseChart [data]="FinalizadosbarChartData"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Sección de Estados de los Viajes -->
+    <div class="col-md-6 mb-4" *ngIf="allDataLoaded">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-center">Estados de viajes</h3>
+          <div class="chart-container" style="position: relative; height: 40vh; width: 100%;">
+            <canvas baseChart [data]="pieChartData" [type]="pieChartType"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Montos de Pagos al Chofer -->
+    <div class="col-md-6 mb-4" *ngIf="allDataLoaded">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-center">Estado de pagos al chofer</h3>
+          <div class="chart-container" style="position: relative; height: 40vh; width: 100%;">
+            <canvas baseChart [data]="paymentStatusChartData" [type]="paymentStatusChartType"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>

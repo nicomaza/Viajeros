@@ -1,0 +1,146 @@
+<div class="container">
+    <h2 class="mt-4">Listado de Pagos de Pasajeros</h2>
+    <p>Detalles de los pagos realizados por los pasajeros y estado de los pagos a los choferes</p>
+    <hr class="my-4">
+    <div class="container mt-4">
+        <label for="estadoFiltro" class="form-label">Filtrar por Estado Pago Chofer:</label>
+        <select id="estadoFiltro" [(ngModel)]="estadoFiltro" class="form-select">
+          <option value="">Todos</option>
+          <option value="PAID">Pagado</option>
+          <option value="PENDING">Pendiente</option>
+        </select>
+      </div>
+      
+    <div class="container mt-4">
+        <!-- Tabla de Pagos de Pasajeros -->
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>ID Pago</th>
+                    <th>ID Viaje</th>
+                    <th>Pasajero</th>
+                    <th>Monto</th>
+                    <th>Estado Pago Pasajero</th>
+                    <th>Chofer</th>
+                    <th>Estado Pago Chofer</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let pago of filteredPagos | filtroEstadoChoferPipe: estadoFiltro">
+                  <td>{{ pago.idPayment }}</td>
+                  <td>{{ pago.idViaje }}</td>
+                  <td>{{ pago.nombrePasajero }}</td>
+                  <td>{{ pago.monto | currency }}</td>
+                  <td>{{ pago.estadoPagoPasajero | translateStatus }}</td>
+                  <td>{{ pago.nombreChofer }}</td>
+                  <td>{{ pago.estadoPagoChofer | translateStatus }}</td>
+                  <td>
+                    <button class="btn btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#editPagoModal" (click)="selectPago(pago)">Editar</button>
+                  </td>
+                </tr>
+              </tbody>
+              
+        </table>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Modal de Edición de Pago de Pasajero -->
+<!-- Modal de Edición de Pago de Pasajero -->
+<div class="modal fade" id="editPagoModal" tabindex="-1" aria-labelledby="editPagoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPagoModalLabel">Editar Pago de Pasajero</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" *ngIf="pagoPasajeroDto">
+                <div class="mb-3">
+                    <label class="form-label">Nombre del Pasajero:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.nombrePasajero" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Monto:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.monto" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Estado Pago Pasajero:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.estadoPagoPasajero" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nombre del Chofer:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.nombreChofer" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">CBU del Chofer:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.cbuChofer" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Banco del Chofer:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.bancoChofer" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Estado Pago Chofer:</label>
+                    <input type="text" class="form-control" [(ngModel)]="pagoPasajeroDto.estadoPagoChofer" readonly>
+                </div>
+
+                <form [formGroup]="paymentForm">
+                    <div class="mb-3">
+                      <label for="nuevoEstado">Nuevo Estado:</label>
+                      <select id="nuevoEstado" formControlName="estado" class="form-select" required>
+                        <option value="" disabled selected>Seleccione un estado</option>
+                        <option value="PAID">Pagado</option>
+                        <option value="PENDING">Pendiente</option>
+                        <option value="REJECTED">Rechazado</option>
+                      </select>
+                      <div *ngIf="paymentForm.get('estado')?.invalid && (paymentForm.get('estado')?.dirty || paymentForm.get('estado')?.touched)" class="text-danger">
+                        Seleccionar un estado es obligatorio.
+                      </div>
+                    </div>
+                
+                    <div class="mb-3">
+                      <label class="form-label">ID transferencia:</label>
+                      <input type="text" class="form-control" formControlName="idTransferenciaChofer" required>
+                      <div *ngIf="paymentForm.get('idTransferenciaChofer')?.invalid && (paymentForm.get('idTransferenciaChofer')?.dirty || paymentForm.get('idTransferenciaChofer')?.touched)" class="text-danger">
+                        ID de transferencia es obligatorio.
+                      </div>
+                    </div>
+                
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-success" (click)="actualizarPago()" [disabled]="paymentForm.invalid" data-bs-dismiss="modal">Modificar</button>
+                    </div>
+                  </form>
+                
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+<div class="pagination-controls mt-3 text-center">
+  <nav aria-label="Paginación de pagos">
+    <ul class="pagination justify-content-center">
+      <!-- Botón de página anterior -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="previousPage()">Anterior</a>
+      </li>
+
+      <!-- Números de página -->
+      <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+
+      <!-- Botón de página siguiente -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="nextPage()">Siguiente</a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,385 @@
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white w-100">
+
+        <label class="py-2"><a [routerLink]="'/profile'">Volver</a></label>
+        <!-- Botones para alternar entre los listados -->
+        <div class="d-flex justify-content-center mb-4 mx-5">
+            <button class="btn btn-black btn-lg poppins-bold mx-2" (click)="showPending()">Pendientes</button>
+            <button class="btn btn-black btn-lg poppins-bold mx-2" (click)="showFinished()">Finalizados</button>
+        </div>
+
+        <!-- Título y listado de viajes pendientes -->
+        <div *ngIf="viewPending">
+            <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Próximos viajes</h1>
+            <label class="dmsans">Viajes pendientes de realizar</label><br>
+
+            <div class="row mt-4 d-flex justify-content-center">
+                <!-- Listado de Cards de Viajes Pendientes -->
+
+                @for (trip of createdTrips; track $index) {
+                <div class="card shadow-sm mb-4 bg-light border-0 rounded-3 mx-2"
+                    style="width: 20rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.03)'"
+                    onmouseout="this.style.transform='scale(1)'">
+
+
+                    <button *ngIf="trip?.status == 'CREATED'"
+                        class="position-absolute top-0 end-0 m-2 d-flex justify-content-center align-items-center"
+                        style="background-color: transparent; border: none; width: 2.5rem; height: 2.5rem; border-radius: 50%;"
+                        (click)="deleteTrip(trip)">
+                        <i class="bi bi-x-circle-fill" style="font-size: 2rem; color: #dc3545;"></i>
+                        <!-- Icono de "X" en círculo -->
+                    </button>
+
+
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <label for="origenInput" class="d-block mb-2" style="font-weight: bold;">Origen</label>
+                            <input id="origenInput" type="button" value="{{trip.origin}}" class="form-control btn-form"
+                                readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="destinoInput" class="d-block mb-2" style="font-weight: bold;">Destino</label>
+                            <input id="destinoInput" type="button" value="{{trip.destination}}"
+                                class="form-control btn-form" readonly>
+                        </div>
+                        <p class="card-text mb-1"><strong>Chofer:</strong> {{trip.driverName}}</p>
+                        <p class="card-text mb-1"><strong>Lugares libres: </strong> <span
+                                style="color: red;">{{trip.availableSeats}}</span></p>
+                        <p class="card-text mb-1"><strong>Fecha:</strong> {{ trip.departureTime | date: 'EEEE d MMMM y'
+                            }}</p>
+                        <p class="card-text mb-3"><strong>Vehiculo:</strong> {{trip.vehicleName}}</p>
+
+                        <!-- Botón con estilo conservado -->
+                        <button class="btn btn-black btn-lg poppins-bold mx-2 mb-3">
+                            {{ translateStatus(trip.status) }}
+                        </button>
+                        <button *ngIf="trip.driverId == userId && trip.status == 'IN PROGRESS'"
+                            class="btn btn-green btn-lg poppins-bold mx-2 mb-3" (click)="openRatingModal(trip)">
+                            Finalizar Viaje
+                        </button>
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                                <!-- Crea estrellas amarillas basadas en el rating redondeado -->
+                                <ng-container *ngFor="let star of [].constructor(round(trip.driverRating)); let i = index">
+                                  <img src="../../assets/star_yellow.png" alt="star" style="width: 20px; height: 20px;">
+                                </ng-container>
+                                <!-- Crea estrellas grises basadas en la diferencia entre 5 y el rating redondeado -->
+                                <ng-container *ngFor="let star of [].constructor(5 - round(trip.driverRating)); let i = index">
+                                  <img src="../../assets/star_gray.png" alt="star" style="width: 20px; height: 20px;">
+                                </ng-container>
+                              </div>
+                            <button class="btn btn-outline-dark btn-sm" (click)="getPassengers(trip.tripId)"
+                                (click)="openTripDetails(trip)">Ver más</button>
+                        </div>
+                    </div>
+                </div>
+                }
+
+            </div>
+        </div>
+
+        <!-- Título y listado de viajes finalizados -->
+        <div *ngIf="viewFinished">
+            <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Viajes finalizados</h1>
+            <label class="dmsans">Aquí puedes encontrar los viajes que te subiste y realizaste</label><br>
+
+            <div class="row mt-4 d-flex justify-content-center">
+                <!-- Listado de Cards de Viajes Finalizados -->
+                <div *ngFor="let trip of finishedTrips; " class="card shadow-sm mb-4 bg-light border-0 rounded-3 mx-2"
+                    style="width: 20rem; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.03)'"
+                    onmouseout="this.style.transform='scale(1)'">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <label for="origenInput" class="d-block mb-2" style="font-weight: bold;">Origen</label>
+                            <input id="origenInput" type="button" value="{{trip.origin}}" class="form-control btn-form"
+                                readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="destinoInput" class="d-block mb-2" style="font-weight: bold;">Destino</label>
+                            <input id="destinoInput" type="button" value="{{trip.destination}}"
+                                class="form-control btn-form" readonly>
+                        </div>
+                        <p class="card-text mb-1"><strong>Chofer:</strong> {{trip.driverName}}</p>
+                        <p class="card-text mb-1"><strong>Lugares libres:</strong> <span
+                                style="color: red;">{{trip.availableSeats}}</span></p>
+                        <p class="card-text mb-1"><strong>Fecha:</strong> {{ trip.departureTime | date: 'EEEE d MMMM y'
+                            }}</p>
+                        <p class="card-text mb-3"><strong>Vehiculo:</strong> {{trip.vehicleName}}</p>
+                        <button *ngIf="trip.status == 'FINISHED' " class="btn btn-red btn-lg poppins-bold mx-2 mb-3">
+                            VIAJE FINALIZADO
+                        </button>
+
+                      
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                              <!-- Crea estrellas amarillas basadas en el rating redondeado -->
+                              <ng-container *ngFor="let star of [].constructor(round(trip.driverRating)); let i = index">
+                                <img src="../../assets/star_yellow.png" alt="star" style="width: 20px; height: 20px;">
+                              </ng-container>
+                              <!-- Crea estrellas grises basadas en la diferencia entre 5 y el rating redondeado -->
+                              <ng-container *ngFor="let star of [].constructor(5 - round(trip.driverRating)); let i = index">
+                                <img src="../../assets/star_gray.png" alt="star" style="width: 20px; height: 20px;">
+                              </ng-container>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" (click)="openTripDetails(trip)">Ver
+                                más</button>
+                          </div>
+                          
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- Modal para calificar al chofer -->
+<!-- Modal para calificar al chofer -->
+<div class="modal fade" id="ratingDriverModal" tabindex="-1" aria-labelledby="ratingDriverModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingDriverModalLabel">Calificar al Chofer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Calificación:</label>
+                    <div class="d-flex justify-content-center align-items-center mb-2">
+                        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+                            <i class="bi bi-star-fill star-icon"
+                               [ngClass]="{'text-warning': driverRating >= star, 'text-muted': driverRating < star}"
+                               (click)="setDriverRating(star)"
+                               style="cursor: pointer; font-size: 2rem; margin-right: 5px;">
+                            </i>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="driverComments" class="form-label">Comentarios:</label>
+                    <textarea id="driverComments" class="form-control" rows="3" [(ngModel)]="driverComments"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="submitDriverRating()">Enviar Calificación</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="tripDetailsModal" tabindex="-1" aria-labelledby="tripDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-light shadow-lg rounded-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tripDetailsModalLabel">Detalles del Viaje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center" *ngIf="selectedTrip">
+                <hr class="mb-3" style="height: 1px; border: none; background-color: #ccc;">
+
+                <!-- Origen, Flecha y Destino -->
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <div class="d-flex flex-column align-items-center" style="width: 40%;">
+                        <label for="">ORIGEN</label>
+                        <div class="form-control bg-white text-center border-0 shadow-sm mb-0"
+                            style="font-weight: bold;">{{selectedTrip.origin}}</div>
+                    </div>
+                    <img src="../../assets/flecha_red.png" alt="flecha" class="mx-2" style="width: 30px; height: 30px;">
+                    <div class="d-flex flex-column align-items-center" style="width: 40%;">
+                        <label for="">DESTINO</label>
+                        <div class="form-control bg-white text-center border-0 shadow-sm mb-0"
+                            style="font-weight: bold;">{{selectedTrip.destination}}</div>
+                    </div>
+                </div>
+
+                <!-- Fecha centrada -->
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <div class="form-control bg-dark text-white text-center border-0 shadow-sm mb-0"
+                        style="width: 80%; font-weight: bold;">
+                        {{ selectedTrip.departureTime | date: 'EEEE d MMMM y' }}
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-center align-items-center mb-0">
+                    <button *ngIf="!isChofer" type="button"
+                        class="form-control bg-dark text-white text-center border-0 shadow-sm mb-3"
+                        style="width: 80%; font-weight: bold;">Sos el
+                        pasajero</button>
+                </div>
+                <hr class="mb-3 mt-3" style="height: 1px; border: none; background-color: #ccc;">
+
+                <!-- Otros datos -->
+                <div class="text-start ms-3">
+                    <p class="mb-1"><strong>Horario de salida:</strong> {{ selectedTrip.departureTime | date: 'HH:mm' }}
+                    </p>
+                    <p class="mb-1"><strong>Mascotas:</strong> {{ selectedTrip.petsAllowed ? 'Sí' : 'No' }}</p>
+                    <p class="mb-1"><strong>Fumadores:</strong> {{ selectedTrip.smokersAllowed ? 'Sí' : 'No' }}</p>
+                    <p class="mb-1"><strong>Vehículo:</strong> {{ selectedTrip.vehicleName }}</p>
+                    <p *ngIf="passengers.length > 0" class="mb-1 text-center mt-3"><strong>Pasajeros: </strong></p>
+                    <div class="d-flex justify-content-center align-items-center mb-0">
+                        @for (item of passengers; track $index) {
+                        <div class="form-control bg-dark text-white text-center border-0 shadow-sm mb-0"
+                            style="width: 80%; font-weight: bold;">
+                            {{ item.nombre }}
+                        </div>
+                        }
+
+                    </div>
+                    <p class="mb-1 text-center"><strong>Lugares disponibles: </strong> <span
+                            style="font-size: 1.5rem; color: red;">{{selectedTrip.availableSeats}}</span></p>
+                </div>
+
+                <!-- Mapa de Google Maps -->
+                <div class="mb-3 mt-4">
+                    <app-google-maps [origin]="{ lat: originLat, lng: originLng }"
+                        [destination]="{ lat: destinationLat, lng: destinationLng }"></app-google-maps>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Botón de editar con el nuevo método -->
+                <button
+                    *ngIf="isChofer && (selectedTrip?.status !== 'FINISHED' && selectedTrip?.status !== 'IN PROGRESS' && dontHavePassengers())"
+                    type="button" class="btn btn-blue btn-lg w-100" (click)="editTrip()">
+                    Editar
+                </button>
+
+                @if(passengers.length != 0){ <button type="button" class="btn btn-red btn-lg w-100"
+                    (click)="openIncidentReport()"  data-bs-dismiss="modal" >Reportar
+                    Viaje</button>}
+
+
+                <button *ngIf="!isChofer && selectedTrip?.status == 'CREATED'" type="button"
+                    class="btn btn-red btn-lg w-100" (click)="deleteTripInModal()"  data-bs-dismiss="modal" >Solicitar reintegro y
+                    anular</button>
+
+                    <button *ngIf="selectedTrip && selectedTrip.tripId !== undefined && choferRated == false && selectedTrip.status === 'FINISHED' && selectedTrip.driverId !== userId"
+                    class="btn btn-red btn-lg poppins-bold mx-2 mb-3"
+                    (click)="openRatingChoferModal(selectedTrip)" >
+                CALIFICAR CHOFER
+            </button>
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Modal para Reportar Incidente -->
+<div class="modal fade" id="reportIncidentModal" tabindex="-1" aria-labelledby="reportIncidentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-light shadow-lg rounded-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportIncidentModalLabel">Reportar Incidente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <form (ngSubmit)="submitIncidentReport()">
+                    <div class="mb-3">
+                        <label for="tipoIncidente" class="form-label">Tipo de Incidente</label>
+                        <select class="form-select" [(ngModel)]="incident.tipoIncidente" name="tipoIncidente" required>
+                            <option value="" disabled>Selecciona un tipo</option>
+                            <ng-container *ngFor="let tipo of tipoIncidenteOptions">
+                              <!-- Utiliza ng-template con ngIf para incluir la lógica de filtro directamente en la plantilla -->
+                              <ng-template [ngIf]="(isChofer && tipo !== 'MALTRATO_CHOFER') || (!isChofer && tipo !== 'MALTRATO_PASAJERO')">
+                                <option [value]="tipo">{{ tipo }}</option>
+                              </ng-template>
+                            </ng-container>
+                          </select>
+                          
+                    </div>
+
+                    <!-- Mostrar el select de pasajeros solo si el tipo de incidente es MALTRATO_PASAJERO -->
+                    <div class="mb-3" *ngIf="incident.tipoIncidente === 'MALTRATO_PASAJERO'">
+                        <label for="pasajeroId" class="form-label">Selecciona el Pasajero</label>
+                        <select class="form-select" [(ngModel)]="incident.denunciadoId" name="pasajeroId" required>
+                            <option value="" disabled>Selecciona un pasajero</option>
+                            <option *ngFor="let passenger of passengers" [value]="passenger.id">{{passenger.nombre}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" [(ngModel)]="incident.descripcion" name="descripcion" rows="3"
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Reportar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Modal para calificar pasajeros -->
+<!-- Modal para calificar pasajeros -->
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true" #ratingModal>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="ratingModalLabel">Calificar Pasajeros</h5>
+
+
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Si es conductor, mostrar pasajeros para calificar -->
+                <div *ngIf="isChofer">
+                    <div *ngFor="let passenger of passengers" class="mb-4">
+                        <label class="d-block text-center ">{{ passenger.nombre }} {{ passenger.apellido }}</label>
+
+                        <div class="d-flex justify-content-center align-items-center mb-2">
+                            <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+                                <i class="bi bi-star-fill star-icon"
+                                    [ngClass]="{'text-warning': getPassengerRating(passenger.id) >= star, 'text-muted': getPassengerRating(passenger.id) < star}"
+                                    (click)="assignRating(passenger, star)"
+                                    style="cursor: pointer; font-size: 2rem; margin-right: 5px;">
+                                </i>
+                            </ng-container>
+                        </div>
+
+
+                        <textarea class="form-control" [ngModel]="getPassengerComments(passenger.id)"
+                            (ngModelChange)="setPassengerComments(passenger.id, $event)"
+                            placeholder="Comentarios opcionales" rows="2" style="resize: none;">
+              </textarea>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="submitRatings()" data-bs-dismiss="modal">Enviar
+                    Calificaciones</button>
+            </div>
+        </div>
+    </div>
+</div>

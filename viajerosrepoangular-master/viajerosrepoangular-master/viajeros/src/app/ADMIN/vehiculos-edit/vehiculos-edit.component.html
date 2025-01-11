@@ -1,0 +1,100 @@
+<div class=" container d-flex align-items-center justify-content-center min-vh-100">
+
+    <div class="align-items-center rounded-3 shadow-lg p-4 m-4 text-center bg-white ">
+        <h1 class="p-1" style="font-size: 2.4rem; font-weight: bold;">Editar Vehiculo</h1>
+        <label for="" class="dmsans">Edita la informacion del vehiculo</label><br>
+   
+
+
+        <label for="" class="py-2"><a  [routerLink]="'/admin/vehiculos'">Volver</a></label>
+
+        <form [formGroup]="updateCar" (ngSubmit)="submitCarForm()">
+            <div class="p-4 pt-1">
+                <!-- Marca (brand) -->
+                <div class="text-start mt-0">
+                    <label for="brand" class="form-label">MARCA</label>
+                    <input formControlName="brand" type="text" class="form-control mb-0" [ngClass]="{'is-valid': updateCar.get('brand')?.valid && updateCar.get('brand')?.touched, 
+                                   'is-invalid': updateCar.get('brand')?.invalid && updateCar.get('brand')?.touched}"
+                        required>
+                    <div *ngIf="updateCar.get('brand')?.invalid && updateCar.get('brand')?.dirty" class="text-danger">
+                        Marca es requerida.
+                    </div>
+                </div>
+
+                <!-- Modelo (model) -->
+                <div class="text-start mt-4">
+                    <label for="model" class="form-label">MODELO</label>
+                    <input formControlName="model" type="text" class="form-control mb-0" [ngClass]="{'is-valid': updateCar.get('model')?.valid && updateCar.get('model')?.touched, 
+                                   'is-invalid': updateCar.get('model')?.invalid && updateCar.get('model')?.touched}"
+                        required>
+                    <div *ngIf="updateCar.get('model')?.invalid && updateCar.get('model')?.dirty" class="text-danger">
+                        Modelo es requerido.
+                    </div>
+                </div>
+
+                <!-- Patente (patent) -->
+                <div class="text-start mt-4">
+                    <label for="patent" class="form-label">PATENTE</label>
+                    <input formControlName="patent" type="text" class="form-control mb-0" [ngClass]="{'is-valid': updateCar.get('patent')?.valid && updateCar.get('patent')?.touched, 
+                                   'is-invalid': updateCar.get('patent')?.invalid && updateCar.get('patent')?.touched}"
+                        required>
+                    <div *ngIf="updateCar.get('patent')?.invalid && updateCar.get('patent')?.dirty" class="text-danger">
+                        Patente es requerida.
+                    </div>
+                </div>
+
+                <!-- Color (color) -->
+                <div class="text-start mt-4">
+                    <label for="color" class="form-label">COLOR</label>
+                    <input formControlName="color" type="text" class="form-control mb-0" [ngClass]="{'is-valid': updateCar.get('color')?.valid && updateCar.get('color')?.touched, 
+                                   'is-invalid': updateCar.get('color')?.invalid && updateCar.get('color')?.touched}"
+                        required>
+                    <div *ngIf="updateCar.get('color')?.invalid && updateCar.get('color')?.dirty" class="text-danger">
+                        Color es requerido.
+                    </div>
+                </div>
+
+                <!-- Tipo de combustible (fuel) -->
+                <div class="text-start mt-4">
+                    <label for="fuel" class="form-label">TIPO DE COMBUSTIBLE</label>
+                    <select formControlName="fuel" class="form-control mb-0" required>
+                        <option value="Gasolina">Nafta</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Eléctrico">Eléctrico</option>
+                    </select>
+                    <div *ngIf="updateCar.get('fuel')?.invalid && updateCar.get('fuel')?.touched" class="text-danger">
+                        Selecciona un tipo de combustible.
+                    </div>
+                </div>
+
+                <!-- GNC -->
+                <div class="text-start mt-4">
+                    <label for="gnc" class="form-label">TIENE GNC?</label>
+                    <select formControlName="gnc" class="form-control mb-0" required>
+                        <option [ngValue]="true">Sí</option>
+                        <option [ngValue]="false">No</option>
+                    </select>
+                    <div *ngIf="updateCar.get('GNC')?.invalid && updateCar.get('GNC')?.touched" class="text-danger">
+                        Selecciona si el vehículo tiene GNC.
+                    </div>
+                </div>
+
+                <!-- Kilometros por litro (kml) -->
+                <div class="text-start mt-4">
+                    <label for="kml" class="form-label">KILKOMETROS POR LITROS (NO OBLIGATORIO)</label>
+                    <input formControlName="kml" type="number" class="form-control mb-0">
+
+                </div>
+
+            </div>
+
+            <div class="p-4">
+                <button type="submit" class="btn btn-black btn-lg poppins-bold"
+                    [disabled]="updateCar.invalid">Actualizar vehiculo</button>
+            </div>
+        </form>
+
+
+
+    </div>
+</div>
